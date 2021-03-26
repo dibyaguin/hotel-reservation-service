@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GuestControllerImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">guest-service</a> &gt; <a href="index.source.html" class="el_package">org.example.guest.controller</a> &gt; <span class="el_source">GuestControllerImpl.java</span></div><h1>GuestControllerImpl.java</h1><pre class="source lang-java linenums">package org.example.guest.controller;
+
+import org.example.guest.model.Guest;
+import org.example.guest.model.Hotel;
+import org.example.guest.model.Reservation;
+import org.example.guest.model.Room;
+import org.example.guest.service.GuestService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * The implementation class of Guest Controller
+ */
+@RestController
+<span class="fc" id="L19">public class GuestControllerImpl implements GuestController {</span>
+
+    @Autowired
+    private GuestService guestService;
+
+    /**
+     * @see {@link GuestController#getGuest(Integer)}  }
+     */
+    @Override
+    @GetMapping(&quot;/guest/{guestId}&quot;)
+    public ResponseEntity&lt;Guest&gt; getGuest(@PathVariable(&quot;guestId&quot;) Integer guestId) {
+<span class="fc" id="L30">        return new ResponseEntity&lt;&gt;(guestService.getGuest(guestId), HttpStatus.OK);</span>
+    }
+
+    /**
+     * @see {@link GuestController#registerGuest(Guest)}  }
+     */
+    @Override
+    @PostMapping(&quot;/guest&quot;)
+    public ResponseEntity&lt;Guest&gt; registerGuest(@RequestBody Guest guest) {
+<span class="fc" id="L39">        return new ResponseEntity&lt;&gt;(guestService.registerGuest(guest), HttpStatus.CREATED);</span>
+    }
+
+    /**
+     * @see {@link GuestController#updateGuest(Guest, Integer)}  }
+     */
+    @Override
+    @PutMapping(&quot;/guest/{guestId}&quot;)
+    public ResponseEntity&lt;Guest&gt; updateGuest(@RequestBody Guest guest, @PathVariable Integer guestId) {
+<span class="fc" id="L48">        return new ResponseEntity&lt;&gt;(guestService.updateGuest(guest, guestId), HttpStatus.OK);</span>
+    }
+    /**
+     * @see {@link GuestController#deleteGuest(Integer)}  }
+     */
+    @Override
+    @DeleteMapping(&quot;/guest/{guestId}&quot;)
+    public ResponseEntity&lt;Integer&gt; deleteGuest(@PathVariable Integer guestId) {
+
+<span class="fc" id="L57">        ResponseEntity&lt;Integer&gt; responseEntity = null;</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (guestService.deleteGuest(guestId)) {</span>
+<span class="fc" id="L59">            responseEntity = new ResponseEntity&lt;&gt;(guestId, HttpStatus.OK);</span>
+        } else {
+<span class="fc" id="L61">            responseEntity = new ResponseEntity&lt;&gt;(guestId, HttpStatus.NOT_FOUND);</span>
+        }
+
+<span class="fc" id="L64">        return responseEntity;</span>
+    }
+
+    /**
+     * @see {@link GuestController#viewHotels()}  }
+     */
+    @Override
+    @GetMapping(&quot;/guest/viewHotels&quot;)
+    public ResponseEntity&lt;List&lt;Hotel&gt;&gt; viewHotels() {
+<span class="fc" id="L73">        return new ResponseEntity&lt;&gt;(guestService.viewHotels(), HttpStatus.OK);</span>
+    }
+
+    /**
+     * @see {@link GuestController#viewAvailableRooms(String, String)}  }
+     */
+    @Override
+    @GetMapping(&quot;/guest/availableRooms&quot;)
+    public ResponseEntity&lt;List&lt;Room&gt;&gt; viewAvailableRooms(@RequestParam(&quot;fromDate&quot;) String startDate,
+                                                         @RequestParam(&quot;toDate&quot;) String endDate) {
+<span class="fc" id="L83">        return new ResponseEntity&lt;&gt;(guestService.viewAvailableRooms(startDate, endDate),</span>
+                HttpStatus.OK);
+    }
+
+    /**
+     * @see {@link GuestController#bookReservation(Reservation)}  }
+     */
+    @Override
+        @PostMapping(&quot;/guest/bookReservation&quot;)
+    public ResponseEntity&lt;Reservation&gt; bookReservation(@RequestBody Reservation reservation) {
+<span class="fc" id="L93">        return new ResponseEntity&lt;&gt;(guestService.bookReservation(reservation), HttpStatus.OK);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

@@ -1,0 +1,24 @@
+{
+  "id" : "f017d196-5922-433d-8b9e-e0154ee7ba3e",
+  "request" : {
+    "urlPath" : "/reservation/getAvailableReservation",
+    "method" : "GET",
+    "queryParameters" : {
+      "roomId" : {
+        "equalTo" : "16"
+      },
+      "fromDate" : {
+        "equalTo" : "2021-04-12"
+      },
+      "toDate" : {
+        "equalTo" : "2021-04-15"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "false",
+    "transformers" : [ "response-template", "spring-cloud-contract" ]
+  },
+  "uuid" : "f017d196-5922-433d-8b9e-e0154ee7ba3e"
+}

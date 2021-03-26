@@ -1,0 +1,14 @@
+org\example\gatewaysecurityservice\model\User.class
+org\example\gatewaysecurityservice\security\JWTUtil.class
+org\example\gatewaysecurityservice\service\UserService.class
+org\example\gatewaysecurityservice\rest\AuthenticationREST.class
+org\example\gatewaysecurityservice\model\Message.class
+org\example\gatewaysecurityservice\security\PBKDF2Encoder.class
+org\example\gatewaysecurityservice\security\WebSecurityConfig.class
+org\example\gatewaysecurityservice\security\model\AuthRequest.class
+org\example\gatewaysecurityservice\security\CORSFilter.class
+org\example\gatewaysecurityservice\security\SecurityContextRepository.class
+org\example\gatewaysecurityservice\security\AuthenticationManager.class
+org\example\gatewaysecurityservice\security\model\AuthResponse.class
+org\example\gatewaysecurityservice\GatewaySecurityServiceApplication.class
+org\example\gatewaysecurityservice\security\model\Role.class

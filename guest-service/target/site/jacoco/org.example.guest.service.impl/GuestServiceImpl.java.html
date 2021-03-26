@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GuestServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">guest-service</a> &gt; <a href="index.source.html" class="el_package">org.example.guest.service.impl</a> &gt; <span class="el_source">GuestServiceImpl.java</span></div><h1>GuestServiceImpl.java</h1><pre class="source lang-java linenums">package org.example.guest.service.impl;
+
+import org.example.guest.entity.GuestEntity;
+import org.example.guest.exception.BookingNotAvailableException;
+import org.example.guest.exception.GuestNotFoundException;
+import org.example.guest.mapper.GuestMapper;
+import org.example.guest.model.Guest;
+import org.example.guest.model.Hotel;
+import org.example.guest.model.Reservation;
+import org.example.guest.model.Room;
+import org.example.guest.repository.GuestRepository;
+import org.example.guest.service.GuestService;
+import org.example.guest.service.helper.HotelFeignClient;
+import org.example.guest.service.helper.ReservationFeignClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.stereotype.Service;
+
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+/**
+ * The implementation class of GuestService
+ */
+@Service
+<span class="fc" id="L30">public class GuestServiceImpl implements GuestService {</span>
+
+    @Autowired
+    private GuestRepository guestRepository;
+
+    @Autowired
+    private GuestMapper guestMapper;
+
+    @Autowired
+    private HotelFeignClient hotelFeignClient;
+
+    @Autowired
+    private ReservationFeignClient reservationFeignClient;
+
+    @Autowired
+    private CircuitBreakerFactory circuitBreakerFactory;
+
+    private static final String CIRCUIT_BREAKER_ID = &quot;circuitbreaker&quot;;
+
+    /**
+     * @see {@link GuestService#registerGuest(Guest)}
+     */
+    @Override
+    public Guest registerGuest(Guest guest) {
+<span class="fc" id="L54">        GuestEntity savedGuestEntity = guestRepository.save(guestMapper.convertModelToEntity(guest, new GuestEntity()));</span>
+<span class="fc" id="L55">        return guestMapper.convertEntityToModel(savedGuestEntity);</span>
+    }
+
+    /**
+     * @see {@link GuestService#getGuest(Integer)}
+     */
+    @Override
+    public Guest getGuest(Integer guestId) {
+<span class="fc" id="L63">        Guest guest = null;</span>
+<span class="fc" id="L64">        Optional&lt;GuestEntity&gt; optionalGuestEntity = guestRepository.findById(guestId);</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (optionalGuestEntity.isPresent()) {</span>
+<span class="fc" id="L66">            guest = guestMapper.convertEntityToModel(optionalGuestEntity.get());</span>
+        } else {
+<span class="fc" id="L68">            throw new GuestNotFoundException(&quot;Guest Id: &quot; + guestId + &quot; not found&quot;);</span>
+        }
+<span class="fc" id="L70">        return guest;</span>
+    }
+
+    /**
+     * @see {@link GuestService#updateGuest(Guest, Integer)}
+     */
+    @Override
+    public Guest updateGuest(Guest guest, Integer guestId) {
+<span class="fc" id="L78">        Guest updatedGuest = null;</span>
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">        if (Objects.nonNull(guestId)) {</span>
+<span class="fc" id="L80">            Optional&lt;GuestEntity&gt; optionalGuestEntity = guestRepository.findById(guestId);</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">            if (optionalGuestEntity.isPresent()) {</span>
+<span class="fc" id="L82">                GuestEntity guestEntity = optionalGuestEntity.get();</span>
+<span class="fc" id="L83">                GuestEntity updatedGuestEntity = guestRepository.save(guestMapper.convertModelToEntity(guest, guestEntity));</span>
+<span class="fc" id="L84">                updatedGuest = guestMapper.convertEntityToModel(updatedGuestEntity);</span>
+<span class="fc" id="L85">            } else {</span>
+<span class="fc" id="L86">                throw new GuestNotFoundException(&quot;Guest Id: &quot; + guestId + &quot; not found&quot;);</span>
+            }
+        }
+
+<span class="fc" id="L90">        return updatedGuest;</span>
+    }
+
+    /**
+     * @see {@link GuestService#deleteGuest(Integer)}
+     */
+    @Override
+    public boolean deleteGuest(Integer guestId) {
+<span class="fc" id="L98">        boolean isDeleted = false;</span>
+<span class="pc bpc" id="L99" title="2 of 4 branches missed.">        if (Objects.nonNull(guestId) &amp;&amp; guestRepository.existsById(guestId)) {</span>
+<span class="fc" id="L100">            guestRepository.deleteById(guestId);</span>
+<span class="fc" id="L101">            isDeleted = true;</span>
+        }
+<span class="fc" id="L103">        return isDeleted;</span>
+    }
+
+    /**
+     * @see {@link GuestService#viewHotels()}
+     */
+    @Override
+    public List&lt;Hotel&gt; viewHotels() {
+<span class="fc" id="L111">        CircuitBreaker circuitBreaker = circuitBreakerFactory.create(CIRCUIT_BREAKER_ID);</span>
+<span class="pc" id="L112">        return  circuitBreaker.run(() -&gt; hotelFeignClient.viewHotels(),</span>
+<span class="nc" id="L113">                throwable -&gt; fallbackViewHotels());</span>
+    }
+
+    /**
+     * This is a fallback method for viewHotels()
+     *
+     * @return
+     */
+    public List&lt;Hotel&gt; fallbackViewHotels() {
+<span class="fc" id="L122">        List&lt;Hotel&gt; hotels = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L123">        hotels.add(new Hotel());</span>
+<span class="fc" id="L124">        return hotels;</span>
+    }
+
+    /**
+     * @see {@link GuestService#viewAvailableRooms(String, String)}
+     */
+    @Override
+    public List&lt;Room&gt; viewAvailableRooms(String startDate, String endDate) {
+<span class="fc" id="L132">        return hotelFeignClient.getAvailableRooms(startDate, endDate);</span>
+    }
+
+    /**
+     * @see {@link GuestService#bookReservation(Reservation)}
+     */
+    @Override
+    public Reservation bookReservation(Reservation reservation) {
+<span class="fc" id="L140">        if (reservationFeignClient.getAvailableReservation(reservation.getRoomId(),</span>
+<span class="fc" id="L141">                reservation.getReservationFromDate().toInstant()</span>
+<span class="fc" id="L142">                        .atZone(ZoneId.systemDefault())</span>
+<span class="fc" id="L143">                        .toLocalDate().toString(),</span>
+<span class="fc" id="L144">                reservation.getReservationToDate().toInstant()</span>
+<span class="fc" id="L145">                        .atZone(ZoneId.systemDefault())</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">                        .toLocalDate().toString()).booleanValue()) {</span>
+
+<span class="fc" id="L148">            return reservationFeignClient.bookReservation(reservation);</span>
+
+        } else {
+<span class="fc" id="L151">            throw new BookingNotAvailableException(&quot;Room id: &quot; + reservation.getRoomId() +</span>
+                    &quot; not available.&quot;);
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

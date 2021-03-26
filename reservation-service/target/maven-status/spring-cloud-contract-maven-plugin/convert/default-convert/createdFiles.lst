@@ -1,0 +1,2 @@
+META-INF\org.example\reservation-service\1.0-SNAPSHOT\contracts\shouldReturnTrueBookingAvailable.groovy
+META-INF\org.example\reservation-service\1.0-SNAPSHOT\mappings\shouldReturnTrueBookingAvailable.json

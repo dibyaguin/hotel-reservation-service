@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RoomMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">hotel-service</a> &gt; <a href="index.source.html" class="el_package">org.example.hotel.mapper</a> &gt; <span class="el_source">RoomMapper.java</span></div><h1>RoomMapper.java</h1><pre class="source lang-java linenums">package org.example.hotel.mapper;
+
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.example.hotel.constant.ActiveType;
+import org.example.hotel.entity.HotelEntity;
+import org.example.hotel.entity.RoomEntity;
+import org.example.hotel.model.Room;
+import org.example.hotel.repository.RoomRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Component
+<span class="fc" id="L19">public class RoomMapper {</span>
+
+    @Autowired
+    private RoomRepository roomRepository;
+
+    /**
+     * This method converts list of RoomEntity objects to list of Room Model objects
+     *
+     * @param roomEntities - the list of RoomEntity Objects to be converted
+     * @return
+     */
+    public List&lt;Room&gt; convertEntityToModel(List&lt;RoomEntity&gt; roomEntities) {
+<span class="nc" id="L31">        return CollectionUtils.emptyIfNull(roomEntities)</span>
+<span class="nc" id="L32">                .stream()</span>
+<span class="nc" id="L33">                .filter(Objects::nonNull)</span>
+<span class="nc" id="L34">                .map(this::convertEntityToModel)</span>
+<span class="nc" id="L35">                .collect(Collectors.toList());</span>
+    }
+
+    /**
+     * This method converts a RoomEntity Object to a model Room Object
+     *
+     * @param roomEntity - the RoomEntity object to be converted
+     * @return
+     */
+    private Room convertEntityToModel(RoomEntity roomEntity) {
+<span class="nc" id="L45">        Room room = new Room();</span>
+<span class="nc" id="L46">        room.setId(roomEntity.getId());</span>
+<span class="nc" id="L47">        room.setHotelId(roomEntity.getHotelEntity().getId());</span>
+<span class="nc" id="L48">        room.setRoomNo(roomEntity.getRoomNo());</span>
+<span class="nc" id="L49">        room.setRoomType(roomEntity.getRoomType());</span>
+<span class="nc" id="L50">        room.setPrice(roomEntity.getPrice());</span>
+<span class="nc" id="L51">        room.setRoomDescription(roomEntity.getRoomDescription());</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        room.setActive(ActiveType.YES.getValue().equalsIgnoreCase(roomEntity.getIsActive()) ? Boolean.TRUE : Boolean.FALSE);</span>
+
+<span class="nc" id="L54">        return room;</span>
+    }
+
+    /**
+     * This method converts list of Room Model objects to list of Room Entity objects
+     *
+     * @param rooms       - the list of model objects to be converted
+     * @param hotelEntity - the associated hotel entity object
+     * @return
+     */
+    public List&lt;RoomEntity&gt; convertModelToEntity(List&lt;Room&gt; rooms, HotelEntity hotelEntity) {
+<span class="nc" id="L65">        return CollectionUtils.emptyIfNull(rooms)</span>
+<span class="nc" id="L66">                .stream()</span>
+<span class="nc" id="L67">                .filter(Objects::nonNull)</span>
+<span class="nc" id="L68">                .map(room -&gt; convertModelToEntity(room, hotelEntity))</span>
+<span class="nc" id="L69">                .collect(Collectors.toList());</span>
+    }
+
+    /**
+     * This method converts a Model Room Object to a Room Entity object
+     *
+     * @param room        - the Room model object to be converted
+     * @param hotelEntity - the associated hotel entity object
+     * @return
+     */
+    private RoomEntity convertModelToEntity(Room room, HotelEntity hotelEntity) {
+
+<span class="nc" id="L81">        RoomEntity roomEntity = new RoomEntity();</span>
+
+<span class="nc bnc" id="L83" title="All 4 branches missed.">        if (Objects.nonNull(room.getId()) &amp;&amp; room.getId() != 0) {</span>
+<span class="nc" id="L84">            Optional&lt;RoomEntity&gt; optionalRoomEntity = roomRepository.findById(room.getId());</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">            if (optionalRoomEntity.isPresent()) {</span>
+<span class="nc" id="L86">                roomEntity = optionalRoomEntity.get();</span>
+            }
+<span class="nc" id="L88">        } else {</span>
+<span class="nc" id="L89">            roomEntity = new RoomEntity();</span>
+<span class="nc" id="L90">            roomEntity.setHotelEntity(hotelEntity);</span>
+        }
+
+<span class="nc" id="L93">        Integer roomNo = room.getRoomNo();</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (Objects.nonNull(roomNo)) {</span>
+<span class="nc" id="L95">            roomEntity.setRoomNo(roomNo);</span>
+        }
+
+<span class="nc" id="L98">        String roomType = room.getRoomType();</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        if (Objects.nonNull(roomType)) {</span>
+<span class="nc" id="L100">            roomEntity.setRoomType(roomType);</span>
+        }
+
+<span class="nc" id="L103">        String roomDescription = room.getRoomDescription();</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        if (Objects.nonNull(roomDescription)) {</span>
+<span class="nc" id="L105">            roomEntity.setRoomDescription(roomDescription);</span>
+        }
+
+<span class="nc" id="L108">        Double roomPrice = room.getPrice();</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        if (Objects.nonNull(roomPrice)) {</span>
+<span class="nc" id="L110">            roomEntity.setPrice(roomPrice);</span>
+        }
+
+<span class="nc" id="L113">        Boolean isActive = room.isActive();</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">        if (Objects.nonNull(isActive)) {</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">            roomEntity.setIsActive(isActive.booleanValue() ? ActiveType.YES.getValue() : ActiveType.NO.getValue());</span>
+        }
+
+<span class="nc" id="L118">        return roomEntity;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HotelEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">hotel-service</a> &gt; <a href="index.source.html" class="el_package">org.example.hotel.entity</a> &gt; <span class="el_source">HotelEntity.java</span></div><h1>HotelEntity.java</h1><pre class="source lang-java linenums">package org.example.hotel.entity;
+
+
+import javax.persistence.*;
+import java.util.List;
+
+@Entity
+@Table(name = &quot;hotels&quot;)
+<span class="fc" id="L9">public class HotelEntity {</span>
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = &quot;id&quot;)
+    private Integer id;
+
+    @Column(name = &quot;name&quot;)
+    private String name;
+
+    @Column(name = &quot;email&quot;)
+    private String email;
+
+    @Column(name = &quot;phone&quot;)
+    private Long phone;
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = &quot;hotelEntity&quot;)
+    private AddressEntity addressEntity;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = &quot;hotelEntity&quot;)
+    private List&lt;RoomEntity&gt; roomEntities;
+
+    public Integer getId() {
+<span class="nc" id="L32">        return id;</span>
+    }
+
+    public void setId(Integer id) {
+<span class="nc" id="L36">        this.id = id;</span>
+<span class="nc" id="L37">    }</span>
+
+    public String getName() {
+<span class="nc" id="L40">        return name;</span>
+    }
+
+    public void setName(String name) {
+<span class="nc" id="L44">        this.name = name;</span>
+<span class="nc" id="L45">    }</span>
+
+    public String getEmail() {
+<span class="nc" id="L48">        return email;</span>
+    }
+
+    public void setEmail(String email) {
+<span class="nc" id="L52">        this.email = email;</span>
+<span class="nc" id="L53">    }</span>
+
+    public Long getPhone() {
+<span class="nc" id="L56">        return phone;</span>
+    }
+
+    public void setPhone(Long phone) {
+<span class="nc" id="L60">        this.phone = phone;</span>
+<span class="nc" id="L61">    }</span>
+
+    public AddressEntity getAddressEntity() {
+<span class="nc" id="L64">        return addressEntity;</span>
+    }
+
+    public void setAddressEntity(AddressEntity addressEntity) {
+<span class="nc" id="L68">        this.addressEntity = addressEntity;</span>
+<span class="nc" id="L69">    }</span>
+
+    public List&lt;RoomEntity&gt; getRoomEntities() {
+<span class="nc" id="L72">        return roomEntities;</span>
+    }
+
+    public void setRoomEntities(List&lt;RoomEntity&gt; roomEntities) {
+<span class="nc" id="L76">        this.roomEntities = roomEntities;</span>
+<span class="nc" id="L77">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

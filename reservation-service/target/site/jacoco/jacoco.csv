@@ -1,0 +1,8 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+reservation-service,org.example.reservation.constant,BookingStatus,0,37,0,0,0,7,0,3,0,3
+reservation-service,org.example.reservation.service.impl,ReservationServiceImpl,0,44,0,2,0,11,0,5,0,4
+reservation-service,org.example.reservation,ReservationApplication,5,3,0,0,2,1,1,1,1,1
+reservation-service,org.example.reservation.entity,ReservationEntity,312,3,62,0,7,1,49,1,18,1
+reservation-service,org.example.reservation.controller,ReservationController,0,33,0,0,0,4,0,4,0,4
+reservation-service,org.example.reservation.model,Reservation,201,114,55,7,0,8,41,9,10,9
+reservation-service,org.example.reservation.mapper,ReservationMapper,76,3,0,0,22,1,3,1,3,1

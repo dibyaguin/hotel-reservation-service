@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReservationController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">reservation-service</a> &gt; <a href="index.source.html" class="el_package">org.example.reservation.controller</a> &gt; <span class="el_source">ReservationController.java</span></div><h1>ReservationController.java</h1><pre class="source lang-java linenums">package org.example.reservation.controller;
+
+import org.example.reservation.model.Reservation;
+import org.example.reservation.service.ReservationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * The Rest Controller class
+ */
+
+@RestController
+<span class="fc" id="L19">public class ReservationController {</span>
+
+    @Autowired
+    private ReservationService reservationService;
+
+    /**
+     * This method fetches all the reserved rooms for specified Dates
+     *
+     * @param reservationFrom - reservation From Date
+     * @param reservationTo   - reservation to date
+     * @return
+     */
+    @GetMapping(&quot;/reservation/getReservedRooms&quot;)
+    public ResponseEntity&lt;List&lt;Reservation&gt;&gt; getReservedRooms(@RequestParam(&quot;fromDate&quot;)
+                                                              @DateTimeFormat(pattern = &quot;yyyy-MM-dd&quot;) Date reservationFrom,
+                                                              @RequestParam(&quot;toDate&quot;)
+                                                              @DateTimeFormat(pattern = &quot;yyyy-MM-dd&quot;) Date reservationTo) {
+<span class="fc" id="L36">        return new ResponseEntity&lt;&gt;(reservationService.getReservedRooms(reservationFrom, reservationTo),</span>
+                HttpStatus.OK);
+    }
+
+    /**
+     * This method fetches the available reservation prior to confirm any reservation
+     *
+     * @param roomId          - the id of the room
+     * @param reservationFrom - booking from date
+     * @param reservationTo   - booking to date
+     * @return
+     */
+    @GetMapping(&quot;/reservation/getAvailableReservation&quot;)
+    public ResponseEntity&lt;Boolean&gt; getAvailableReservation(@RequestParam(&quot;roomId&quot;) Integer roomId,
+                                                           @RequestParam(&quot;fromDate&quot;)
+                                                           @DateTimeFormat(pattern = &quot;yyyy-MM-dd&quot;) Date reservationFrom,
+                                                           @RequestParam(&quot;toDate&quot;)
+                                                           @DateTimeFormat(pattern = &quot;yyyy-MM-dd&quot;) Date reservationTo
+    ) {
+<span class="fc" id="L55">        return new ResponseEntity&lt;&gt;(reservationService.getAvailableReservation(roomId, reservationFrom, reservationTo),</span>
+                HttpStatus.OK);
+    }
+
+    /**
+     * This method saves a new reservation
+     *
+     * @param reservation - the model object
+     * @return
+     */
+    @PostMapping(&quot;/reservation/bookReservation&quot;)
+    public ResponseEntity&lt;Reservation&gt; saveReservation(@RequestBody Reservation reservation) {
+<span class="fc" id="L67">        return new ResponseEntity&lt;&gt;(reservationService.saveReservation(reservation), HttpStatus.OK);</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

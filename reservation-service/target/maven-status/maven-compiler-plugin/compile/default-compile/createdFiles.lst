@@ -1,0 +1,9 @@
+org\example\reservation\entity\ReservationEntity.class
+org\example\reservation\mapper\ReservationMapper.class
+org\example\reservation\controller\ReservationController.class
+org\example\reservation\model\Reservation.class
+org\example\reservation\ReservationApplication.class
+org\example\reservation\repository\ReservationRepository.class
+org\example\reservation\constant\BookingStatus.class
+org\example\reservation\service\impl\ReservationServiceImpl.class
+org\example\reservation\service\ReservationService.class

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HotelMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">hotel-service</a> &gt; <a href="index.source.html" class="el_package">org.example.hotel.mapper</a> &gt; <span class="el_source">HotelMapper.java</span></div><h1>HotelMapper.java</h1><pre class="source lang-java linenums">package org.example.hotel.mapper;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.example.hotel.entity.HotelEntity;
+import org.example.hotel.model.Address;
+import org.example.hotel.model.Hotel;
+import org.example.hotel.model.Room;
+import org.example.hotel.repository.HotelRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+/**
+ * This the Mapper class for mapping between HotelEntity and Hotel Model
+ */
+@Component
+<span class="fc" id="L20">public class HotelMapper {</span>
+
+    @Autowired
+    private AddressMapper addressMapper;
+
+    @Autowired
+    private RoomMapper roomMapper;
+
+    @Autowired
+    private HotelRepository hotelRepository;
+
+    /**
+     * This method converts list of HotelEntity objects to list of Hotel model objects
+     *
+     * @param hotelEntities -  the HotelEntity object to be converted
+     * @return
+     */
+    public List&lt;Hotel&gt; convertEntityToModel(List&lt;HotelEntity&gt; hotelEntities) {
+
+<span class="nc" id="L39">        return CollectionUtils.emptyIfNull(hotelEntities)</span>
+<span class="nc" id="L40">                .stream()</span>
+<span class="nc" id="L41">                .filter(Objects::nonNull)</span>
+<span class="nc" id="L42">                .map(this::convertEntityToModel)</span>
+<span class="nc" id="L43">                .collect(Collectors.toList());</span>
+    }
+
+    /**
+     * This method converts a HotelEntity object to a Model Hotel Object
+     *
+     * @param hotelEntity - the HotelEntity Object to be converted
+     * @return
+     */
+    public Hotel convertEntityToModel(HotelEntity hotelEntity) {
+
+<span class="nc" id="L54">        Hotel hotel = new Hotel();</span>
+<span class="nc" id="L55">        hotel.setId(hotelEntity.getId());</span>
+<span class="nc" id="L56">        hotel.setName(hotelEntity.getName());</span>
+<span class="nc" id="L57">        hotel.setPhone(hotelEntity.getPhone());</span>
+<span class="nc" id="L58">        hotel.setEmail(hotelEntity.getEmail());</span>
+
+<span class="nc" id="L60">        Address address = addressMapper.convertEntityToModel(hotelEntity.getAddressEntity());</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">        if (Objects.nonNull(address)) {</span>
+<span class="nc" id="L62">            hotel.setAddress(address);</span>
+        }
+
+<span class="nc" id="L65">        List&lt;Room&gt; rooms = roomMapper.convertEntityToModel(hotelEntity.getRoomEntities());</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (CollectionUtils.isNotEmpty(rooms)) {</span>
+<span class="nc" id="L67">            hotel.setRooms(rooms);</span>
+        }
+
+<span class="nc" id="L70">        return hotel;</span>
+    }
+
+    /**
+     * This method converts Hotel Model Object to HotelEntity Object
+     *
+     * @param hotel       - the model object to be converted
+     * @param hotelEntity - the entity object to be saved in the db
+     * @return
+     */
+    public HotelEntity convertModelToEntity(Hotel hotel, HotelEntity hotelEntity) {
+
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        if (Objects.nonNull(hotel)) {</span>
+
+<span class="nc" id="L84">            String hotelName = hotel.getName();</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">            if (Objects.nonNull(hotelName)) {</span>
+<span class="nc" id="L86">                hotelEntity.setName(hotelName);</span>
+            }
+
+<span class="nc" id="L89">            String email = hotel.getEmail();</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">            if (Objects.nonNull(email)) {</span>
+<span class="nc" id="L91">                hotelEntity.setEmail(email);</span>
+            }
+
+<span class="nc" id="L94">            Long phone = hotel.getPhone();</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">            if (Objects.nonNull(phone)) {</span>
+<span class="nc" id="L96">                hotelEntity.setPhone(phone);</span>
+            }
+
+<span class="nc" id="L99">            HotelEntity savedHotelEntity = hotelRepository.save(hotelEntity);</span>
+
+<span class="nc" id="L101">            hotelEntity.setAddressEntity(</span>
+<span class="nc" id="L102">                    addressMapper.convertModelToEntity(hotel.getAddress(), savedHotelEntity));</span>
+
+<span class="nc" id="L104">            hotelEntity.setRoomEntities(roomMapper.convertModelToEntity(hotel.getRooms(), savedHotelEntity));</span>
+        }
+<span class="nc" id="L106">        return hotelEntity;</span>
+
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

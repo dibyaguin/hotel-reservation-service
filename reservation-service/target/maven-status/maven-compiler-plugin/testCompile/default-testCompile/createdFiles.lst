@@ -1,0 +1,4 @@
+org\example\reservation\ContractVerifierTest.class
+org\example\reservation\service\impl\ReservationServiceImplTest.class
+org\example\reservation\controller\ReservationControllerTest.class
+org\example\reservation\ReservationApplicationTests.class

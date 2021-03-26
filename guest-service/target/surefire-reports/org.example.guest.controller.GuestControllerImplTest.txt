@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: org.example.guest.controller.GuestControllerImplTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 22.525 s - in org.example.guest.controller.GuestControllerImplTest

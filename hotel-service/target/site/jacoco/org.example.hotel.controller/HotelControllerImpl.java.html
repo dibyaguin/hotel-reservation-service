@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HotelControllerImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">hotel-service</a> &gt; <a href="index.source.html" class="el_package">org.example.hotel.controller</a> &gt; <span class="el_source">HotelControllerImpl.java</span></div><h1>HotelControllerImpl.java</h1><pre class="source lang-java linenums">package org.example.hotel.controller;
+
+import org.example.hotel.model.Hotel;
+import org.example.hotel.model.Room;
+import org.example.hotel.service.HotelService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * The Hotel Controller Implementation
+ */
+@RestController
+<span class="fc" id="L17">public class HotelControllerImpl implements HotelController {</span>
+
+    @Autowired
+    private HotelService hotelService;
+
+    /**
+     * @see {@link HotelController#getHotels()}
+     */
+    @Override
+    @GetMapping(&quot;/hotels&quot;)
+    public ResponseEntity&lt;List&lt;Hotel&gt;&gt; getHotels() {
+<span class="fc" id="L28">        return new ResponseEntity&lt;&gt;(hotelService.getHotels(), HttpStatus.OK);</span>
+    }
+
+    /**
+     * @see {@link HotelController#getHotel(Integer)}
+     */
+    @Override
+    @GetMapping(&quot;/hotel/{hotelId}&quot;)
+    public ResponseEntity&lt;Hotel&gt; getHotel(@PathVariable(&quot;hotelId&quot;) Integer hotelId) {
+<span class="fc" id="L37">        return new ResponseEntity&lt;&gt;(hotelService.getHotel(hotelId), HttpStatus.OK);</span>
+    }
+
+    /**
+     * @see {@link HotelController#createHotel(Hotel)}
+     */
+    @Override
+    @PostMapping(&quot;/hotel&quot;)
+    public ResponseEntity&lt;Hotel&gt; createHotel(@RequestBody Hotel hotel) {
+<span class="fc" id="L46">        return new ResponseEntity&lt;&gt;(hotelService.createHotel(hotel), HttpStatus.CREATED);</span>
+    }
+
+    /**
+     * @see {@link HotelController#updateHotel(Hotel, Integer)}
+     */
+    @Override
+    @PutMapping(&quot;/hotel/{hotelId}&quot;)
+    public ResponseEntity&lt;Hotel&gt; updateHotel(@RequestBody Hotel hotel, @PathVariable Integer hotelId) {
+<span class="fc" id="L55">        return new ResponseEntity&lt;&gt;(hotelService.updateHotel(hotel, hotelId), HttpStatus.OK);</span>
+    }
+
+    /**
+     * @see {@link HotelController#deleteHotel(Integer)}
+     */
+    @Override
+    @DeleteMapping(&quot;/hotel/{hotelId}&quot;)
+    public ResponseEntity&lt;Integer&gt; deleteHotel(@PathVariable Integer hotelId) {
+
+<span class="fc" id="L65">        ResponseEntity&lt;Integer&gt; responseEntity = null;</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        if (hotelService.deleteHotel(hotelId)) {</span>
+<span class="fc" id="L67">            responseEntity = new ResponseEntity&lt;&gt;(hotelId, HttpStatus.OK);</span>
+        } else {
+<span class="fc" id="L69">            responseEntity = new ResponseEntity&lt;&gt;(hotelId, HttpStatus.NOT_FOUND);</span>
+        }
+
+<span class="fc" id="L72">        return responseEntity;</span>
+    }
+
+    /**
+     * @see {@link HotelController#getAvailableRooms(String, String)}
+     */
+    @Override
+    @GetMapping(&quot;/hotel/availableRooms&quot;)
+    public ResponseEntity&lt;List&lt;Room&gt;&gt; getAvailableRooms(@RequestParam(&quot;fromDate&quot;) String fromDate,
+                                                        @RequestParam(&quot;toDate&quot;) String toDate) {
+<span class="fc" id="L82">        return new ResponseEntity&lt;&gt;(hotelService.getAvailableRooms(fromDate, toDate), HttpStatus.OK);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
